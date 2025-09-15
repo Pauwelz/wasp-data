@@ -7,7 +7,6 @@ var
   hash: String;
 begin
   files := DirList(PATH, True);
-
   for i := 0 to High(files) do
   begin
     if PathIsDirectory(files[i]) then Continue;
