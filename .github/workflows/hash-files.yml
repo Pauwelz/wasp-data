@@ -49,9 +49,7 @@ jobs:
           git config --global user.email "waspbot@waspcripts.com"
           if [[ -n "$(git status --porcelain)" ]]; then
             git add -A
-            CURRENT_DATE=$(date +'%Y.%m.%d')
-            COMMIT_HASH=$(git rev-parse --short HEAD)
-            git commit -m "Automatic version bump to $CURRENT_DATE-$COMMIT_HASH"
+            git commit -m "Automatic hash files update"
             git push
           else
             echo "No changes to commit."
