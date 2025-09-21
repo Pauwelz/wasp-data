@@ -28,7 +28,7 @@ jobs:
           fi
           
   process-gear:
-    if: ${{ github.repository_owner == 'WaspScripts' && needs.check-items.outputs.changed == 'true'}}
+    if: ${{ github.repository_owner == 'WaspScripts' && needs.check-items.outputs.changed == 'true' }}
     needs: check-items
     runs-on: windows-latest
     steps:          
