@@ -57,7 +57,7 @@ jobs:
 
 
   notification:
-    if: ${{ github.repository_owner == 'WaspScripts' }}
+    if: ${{ github.repository_owner == 'WaspScripts' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Discord notification
