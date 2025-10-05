@@ -3,7 +3,7 @@ name: Update Hashes
 on:
   push:
     branches:
-      - '**'
+      - main
 
 jobs:
   hash-files:
