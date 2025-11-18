@@ -36,12 +36,13 @@ jobs:
                   ls -la runelite/cache/src/main/java/net/runelite/cache
             - name: Build RuneLite
               run: |
-                  cd runelite/cache
+                  cd runelite
                   mvn clean package -DskipTests
             - name: Copy built client jar
               run: |
                   mkdir staging
                   cp runelite/cache/target/*.jar staging
+                  cp runelite/runelite-client/target/client-*-shaded.jar staging
             - uses: actions/upload-artifact@v4
               with:
                 name: RuneLite-Build
@@ -56,8 +57,8 @@ jobs:
               run: |
                 mkdir -p cache/output
                 cd runelite
-                echo "Re-running SimbaItemDumper with verbose output for diagnostics";
-                mvn -e -DskipTests -pl cache -am org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
+                # Use Maven exec from cache module - full build ensures all dependencies are available
+                mvn -pl cache org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
                   -Dexec.mainClass=net.runelite.cache.SimbaItemDumper \
-                  -Dexec.classpathScope=runtime \
+                  -Dexec.classpathScope=compile \
                   -Dexec.args="--cachedir ../cache/input --cachename cache --outputdir ../cache/output"
