@@ -375,7 +375,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b update-${{ inputs.cache_version }}
-          git add --all
+          git add -u
           git commit -m "Add cache dumps for OpenRS2 version ${{ inputs.cache_version }}" || echo "No changes to commit"
           git push origin update-${{ inputs.cache_version }}
       # - name: Create Pull Request
