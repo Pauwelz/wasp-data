@@ -10,7 +10,9 @@ jobs:
     build-runelite:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout repository
+            - name: Checkout Wasp Data repository
+              uses: actions/checkout@v5
+            - name: Checkout RuneLite repository
               uses: actions/checkout@v5
               with:
                 repository: 'runelite/runelite'
