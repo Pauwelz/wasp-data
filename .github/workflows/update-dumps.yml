@@ -179,11 +179,15 @@ jobs:
           mkdir -p cache/output
           java -cp staging/cache-*-SNAPSHOT-jar-with-dependencies.jar net.runelite.cache.SimbaHeightMapDumper \
             --cachedir cache/input --cachename ${{ inputs.cache_version }} --outputdir cache/output
+      - name: Zip item definitions
+        run: |
+            cd cache/output/${{ inputs.cache_version }}
+            zip -r heightmap.zip heightmap
       - name: Upload Height Maps
         uses: actions/upload-artifact@v4
         with:
           name: heightmap-${{ inputs.cache_version }}
-          path: cache/output/${{ inputs.cache_version }}/heightmap
+          path: cache/output/${{ inputs.cache_version }}/heightmap.zip
 
   dump-itemsprites:
     runs-on: ubuntu-latest
@@ -275,11 +279,15 @@ jobs:
           mkdir -p cache/output
           java -cp staging/cache-*-SNAPSHOT-jar-with-dependencies.jar net.runelite.cache.SimbaNPCDumper \
             --cachedir cache/input --cachename ${{ inputs.cache_version }} --outputdir cache/output
+      - name: Zip NPCs
+        run: |
+            cd cache/output/${{ inputs.cache_version }}
+            zip -r npcs.zip NPCs
       - name: Upload NPCs
         uses: actions/upload-artifact@v4
         with:
           name: npcs-${{ inputs.cache_version }}
-          path: cache/output/${{ inputs.cache_version }}/NPCs
+          path: cache/output/${{ inputs.cache_version }}/npcs.zip
 
   dump-objectinfo:
     runs-on: ubuntu-latest
@@ -357,13 +365,17 @@ jobs:
           path: artifacts
       - name: Organize dump outputs
         run: |
-          cp artifacts/items-${{ inputs.cache_version }}/item-definitions.zip jsons/item-definitions.zip 2>/dev/null || true
+          mv artifacts/items-${{ inputs.cache_version }}/item-definitions.zip jsons/item-definitions.zip 2>/dev/null || true
+          mv artifacts/collision-${{ inputs.cache_version }}/collision.zip map/collision.zip 2>/dev/null || true
+          mv artifacts/heightmap-${{ inputs.cache_version }}/heightmap.zip map/heightmap.zip 2>/dev/null || true
+          mv artifacts/npcs-${{ inputs.cache_version }}/npcs.zip map/npcs_helper.zip 2>/dev/null || true
+          mv artifacts/map-${{ inputs.cache_version }}/map.zip map/map.zip 2>/dev/null || true
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b update-${{ inputs.cache_version }}
-          git add -a
+          git add --all
           git commit -m "Add cache dumps for OpenRS2 version ${{ inputs.cache_version }}" || echo "No changes to commit"
           git push origin update-${{ inputs.cache_version }}
       # - name: Create Pull Request
