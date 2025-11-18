@@ -71,20 +71,20 @@ jobs:
                   mkdir -p cache/input
                   unzip -o cache.zip -d cache/input/${{ steps.cache-version.outputs.VERSION }}
                   mv keys.json cache/input/${{ steps.cache-version.outputs.VERSION }}/${{ steps.cache-version.outputs.VERSION }}.json
-            - name: Run SimbaItemDumper
-              run: |
-                mkdir -p cache/output
-                cd runelite/cache
-                mvn -q org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
-                  -Dexec.mainClass=net.runelite.cache.SimbaItemDumper \
-                  -Dexec.classpathScope=compile \
-                  -Dexec.args="--cachedir ../../cache/input --cachename ${{ steps.cache-version.outputs.VERSION }} --outputdir ../../cache/output"
             - name: Run SimbaCacheDumper
               run: |
                 mkdir -p cache/output
                 cd runelite/cache
                 mvn -q org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
                   -Dexec.mainClass=net.runelite.cache.SimbaCacheDumper \
+                  -Dexec.classpathScope=compile \
+                  -Dexec.args="--cachedir ../../cache/input --cachename ${{ steps.cache-version.outputs.VERSION }} --outputdir ../../cache/output"
+            - name: Run SimbaItemDumper
+              run: |
+                mkdir -p cache/output
+                cd runelite/cache
+                mvn -q org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
+                  -Dexec.mainClass=net.runelite.cache.SimbaItemDumper \
                   -Dexec.classpathScope=compile \
                   -Dexec.args="--cachedir ../../cache/input --cachename ${{ steps.cache-version.outputs.VERSION }} --outputdir ../../cache/output"
             # - uses: actions/upload-artifact@v4
