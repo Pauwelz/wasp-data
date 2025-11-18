@@ -83,7 +83,7 @@ jobs:
               run: |
                 mkdir -p cache/output
                 cd runelite/cache
-                mvn -q exec \
+                mvn -q org.codehaus.mojo:exec-maven-plugin:3.1.0:java \
                   -Dexec.mainClass=net.runelite.cache.SimbaCacheDumper \
                   -Dexec.classpathScope=compile \
                   -Dexec.args="--cachedir ../../cache/input --cachename ${{ steps.cache-version.outputs.VERSION }} --outputdir ../../cache/output"
