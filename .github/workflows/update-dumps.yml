@@ -370,6 +370,14 @@ jobs:
           mv artifacts/heightmap-${{ inputs.cache_version }}/heightmap.zip map/heightmap.zip 2>/dev/null || true
           mv artifacts/npcs-${{ inputs.cache_version }}/npcs.zip map/npcs_helper.zip 2>/dev/null || true
           mv artifacts/map-${{ inputs.cache_version }}/map.zip map/map.zip 2>/dev/null || true
+      - name: Download Simba binary
+        run: |
+          SIMBA_URL=$(curl -L https://raw.githubusercontent.com/Villavu/Simba-Build-Archive/refs/heads/main/latest.linux64)
+          curl -L -o simba "$SIMBA_URL"
+          chmod +x simba
+      - name: Run Simba to extract additional assets
+        run: |
+          ./simba --run tools/update_npcs.simba
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
