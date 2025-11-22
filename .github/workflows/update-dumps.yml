@@ -363,21 +363,37 @@ jobs:
           path: artifacts
       - name: Organize dump outputs
         run: |
-          mv artifacts/items-${{ inputs.cache_version }}/item-definitions.zip jsons/item-definitions.zip 2>/dev/null || true
-          mv artifacts/collision-${{ inputs.cache_version }}/collision.zip map/collision.zip 2>/dev/null || true
-          mv artifacts/heightmap-${{ inputs.cache_version }}/heightmap.zip map/heightmap.zip 2>/dev/null || true
-          mv artifacts/npcs-${{ inputs.cache_version }}/npcs.zip map/npcs_helper.zip 2>/dev/null || true
-          mv artifacts/map-${{ inputs.cache_version }}/map.zip map/map.zip 2>/dev/null || true
+          New-Item -ItemType Directory -Force -Path jsons | Out-Null
+          New-Item -ItemType Directory -Force -Path map | Out-Null
+          $cv = "${{ inputs.cache_version }}"
+          $moves = @(
+            @{Source="artifacts/items-$cv/item-definitions.zip"; Dest="jsons/item-definitions.zip"},
+            @{Source="artifacts/collision-$cv/collision.zip"; Dest="map/collision.zip"},
+            @{Source="artifacts/heightmap-$cv/heightmap.zip"; Dest="map/heightmap.zip"},
+            @{Source="artifacts/npcs-$cv/npcs.zip"; Dest="map/npcs_helper.zip"},
+            @{Source="artifacts/map-$cv/map.zip"; Dest="map/map.zip"}
+          )
+          foreach ($m in $moves) {
+            if (Test-Path $m.Source) {
+              Write-Host "Moving $($m.Source) -> $($m.Dest)"
+              Move-Item -Force $m.Source $m.Dest
+            } else {
+              Write-Host "Source not found (skipping): $($m.Source)"
+            }
+          }
       - name: Download Simba binary
         run: |
-          SIMBA_URL=$(curl -L https://raw.githubusercontent.com/Villavu/Simba-Build-Archive/refs/heads/main/latest.linux64)
-          SIMBA_URL=${SIMBA_URL/Linux64.zip/Linux.zip}
-          curl -L -o simba.zip "$SIMBA_URL"
-          unzip simba.zip
-          chmod +x Simba-Linux64
+          $latestUrlFile = "https://raw.githubusercontent.com/Villavu/Simba-Build-Archive/refs/heads/main/latest.win64"
+          $simbaZipUrl = (Invoke-WebRequest -Uri $latestUrlFile -UseBasicParsing).Content.Trim()
+          Invoke-WebRequest -Uri $simbaZipUrl -OutFile simba.zip
+          Expand-Archive -Path simba.zip -DestinationPath simba -Force
+          $exe = Get-ChildItem simba -Filter "Simba-Win64*.exe" | Select-Object -First 1
+          if (-not $exe) { Write-Error "Simba executable not found after extraction"; exit 1 }
       - name: Run Simba to extract additional assets
         run: |
-          ./Simba-Linux64 --run tools/update_npcs.simba
+          $exe = Get-ChildItem simba -Filter "Simba-Win64*.exe" | Select-Object -First 1
+          if (-not $exe) { Write-Error "Simba executable not found before run"; exit 1 }
+          & $exe.FullName --run tools/update_npcs.simba
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
