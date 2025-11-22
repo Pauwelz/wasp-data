@@ -384,10 +384,10 @@ jobs:
       - name: Run Simba to extract additional assets
         run: |
           $exe = Get-ChildItem . -Filter "Simba-Win64*.exe" | Select-Object -First 1
-          & Simba-Win64.exe --run tools/hash-files.simba
-          & Simba-Win64.exe --run tools/update_gear.simba
-          & Simba-Win64.exe --run tools/update_items.simba
-          & Simba-1400.exe --run tools/update_npcs.simba
+          & .\Simba-Win64.exe --run tools/hash-files.simba
+          & .\Simba-Win64.exe --run tools/update_gear.simba
+          & .\Simba-Win64.exe --run tools/update_items.simba
+          & .\Simba-1400.exe --run tools/update_npcs.simba
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
