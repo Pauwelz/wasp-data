@@ -363,12 +363,13 @@ jobs:
             @{Source="artifacts/collision/collision.zip"; Dest="map/collision.zip"},
             @{Source="artifacts/heightmap/heightmap.zip"; Dest="map/heightmap.zip"},
             @{Source="artifacts/npcs/npcs.zip"; Dest="map/npcs_helper.zip"},
+            @{Source="artifacts/npcs/npcs.zip"; Dest="tools/npcs_helper.zip"},
             @{Source="artifacts/map/map.zip"; Dest="map/map.zip"}
           )
           foreach ($m in $moves) {
             if (Test-Path $m.Source) {
               Write-Host "Moving $($m.Source) -> $($m.Dest)"
-              Move-Item -Force $m.Source $m.Dest
+              Copy-Item -Force $m.Source $m.Dest
             } else {
               Write-Host "Source not found (skipping): $($m.Source)"
             }
