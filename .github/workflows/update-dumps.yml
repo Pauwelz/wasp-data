@@ -6,11 +6,14 @@ on:
       cache_version:
         description: 'OpenRS2 cache version to process'
         required: true
-  push:
-    paths:
-      - 'cache_version'
-    branches:
-      - main
+        type: string
+  workflow_call:
+    inputs:
+      cache_version:
+        description: 'OpenRS2 cache version to process'
+        required: true
+        type: string
+        
 
 run-name: Update Dumps for OpenRS2 cache version ${{ inputs.cache_version }}
 
@@ -389,10 +392,11 @@ jobs:
           Expand-Archive -Path simba.zip -DestinationPath simba -Force
       - name: Run Simba to extract additional assets
         run: |
-          Simba-Win64.exe --run tools/hash-files.simba
-          Simba-Win64.exe --run tools/update_gear.simba
-          Simba-Win64.exe --run tools/update_items.simba
-          Simba-Win64.exe --run tools/update_npcs.simba
+          $exe = Get-ChildItem simba -Filter "Simba-Win64*.exe" | Select-Object -First 1
+          & $exe.FullName --run tools/hash-files.simba
+          & $exe.FullName --run tools/update_gear.simba
+          & $exe.FullName --run tools/update_items.simba
+          & $exe.FullName --run tools/update_npcs.simba
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
