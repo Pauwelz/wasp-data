@@ -344,6 +344,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      - name: Checkout SRL-T
+        uses: actions/checkout@v5
+        with:
+          repository: 'Torwent/SRL-T'
+          ref: 'master'
+          path: Includes/SRL-T
       - name: Download all dump artifacts
         uses: actions/download-artifact@v4
         with:
@@ -374,14 +380,14 @@ jobs:
           $simbaZipUrl = (Invoke-WebRequest -Uri $latestUrlFile -UseBasicParsing).Content.Trim()
           Invoke-WebRequest -Uri $simbaZipUrl -OutFile simba.zip
           Invoke-WebRequest -Uri https://github.com/Villavu/Simba/releases/download/simba1400-release/Simba-Win64.exe -OutFile Simba-1400.exe
-          Expand-Archive -Path simba.zip -DestinationPath simba -Force
+          Expand-Archive -Path simba.zip -Force
       - name: Run Simba to extract additional assets
         run: |
-          $exe = Get-ChildItem . -Filter "Simba-1400*.exe" | Select-Object -First 1
-          & $exe.FullName --run tools/hash-files.simba
-          & $exe.FullName --run tools/update_gear.simba
-          & $exe.FullName --run tools/update_items.simba
-          & $exe.FullName --run tools/update_npcs.simba
+          $exe = Get-ChildItem . -Filter "Simba-Win64*.exe" | Select-Object -First 1
+          & Simba-Win64.exe --run tools/hash-files.simba
+          & Simba-Win64.exe --run tools/update_gear.simba
+          & Simba-Win64.exe --run tools/update_items.simba
+          & Simba-1400.exe --run tools/update_npcs.simba
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
