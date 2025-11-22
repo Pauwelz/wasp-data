@@ -404,7 +404,7 @@ jobs:
           git checkout -b update-${{ inputs.cache_version }}
           git add -u
           git commit -m "Add cache dumps for OpenRS2 version ${{ inputs.cache_version }}" || echo "No changes to commit"
-          git push origin update-${{ inputs.cache_version }}
+          git push origin update-${{ inputs.cache_version }} --force
       # - name: Create Pull Request
       #   uses: peter-evans/create-pull-request@v6
       #   with:
