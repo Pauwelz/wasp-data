@@ -389,10 +389,11 @@ jobs:
           $latestUrlFile = "https://raw.githubusercontent.com/Villavu/Simba-Build-Archive/refs/heads/main/latest.win64"
           $simbaZipUrl = (Invoke-WebRequest -Uri $latestUrlFile -UseBasicParsing).Content.Trim()
           Invoke-WebRequest -Uri $simbaZipUrl -OutFile simba.zip
+          Invoke-WebRequest -Uri https://github.com/Villavu/Simba/releases/download/simba1400-release/Simba-Win64.exe -OutFile Simba-1400.exe
           Expand-Archive -Path simba.zip -DestinationPath simba -Force
       - name: Run Simba to extract additional assets
         run: |
-          $exe = Get-ChildItem simba -Filter "Simba-Win64*.exe" | Select-Object -First 1
+          $exe = Get-ChildItem simba -Filter "Simba-1400.exe" | Select-Object -First 1
           & $exe.FullName --run tools/hash-files.simba
           & $exe.FullName --run tools/update_gear.simba
           & $exe.FullName --run tools/update_items.simba
