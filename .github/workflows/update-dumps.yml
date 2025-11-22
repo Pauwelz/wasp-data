@@ -65,19 +65,17 @@ jobs:
         uses: actions/cache@v4
         id: openrs2-cache
         with:
-          path: openrs2/cache.zip
+          path: openrs2/cache/input
           key: openrs2-cache-${{ inputs.cache_version }}
       - name: Download OpenRS2 (miss)
         if: steps.openrs2-cache.outputs.cache-hit != 'true'
         run: |
-          mkdir -p openrs2
-          curl -L -o openrs2/cache.zip https://archive.openrs2.org/caches/runescape/${{ inputs.cache_version }}/disk.zip
-      - name: Extract OpenRS2
-        run: |
           mkdir -p openrs2/cache/input/${{ inputs.cache_version }}
-          unzip -o openrs2/cache.zip -d openrs2/cache/input/${{ inputs.cache_version }}
-          curl -L -o openrs2/keys.json https://archive.openrs2.org/caches/runescape/${{ inputs.cache_version }}/keys.json
-          mv openrs2/keys.json openrs2/cache/input/${{ inputs.cache_version }}/${{ inputs.cache_version }}.json
+          curl -L -o disk.zip https://archive.openrs2.org/caches/runescape/${{ inputs.cache_version }}/disk.zip
+          unzip -o disk.zip -d openrs2/cache/input/${{ inputs.cache_version }}
+      - name: Fetch latest OpenRS2 keys.json
+        run: |
+          curl -L -o openrs2/cache/input/${{ inputs.cache_version }}/${{ inputs.cache_version }}.json https://archive.openrs2.org/caches/runescape/${{ inputs.cache_version }}/keys.json
       - name: Upload OpenRS2 artifact
         uses: actions/upload-artifact@v4
         with:
@@ -354,10 +352,7 @@ jobs:
           path: cache/output/${{ inputs.cache_version }}
 
   commit-results:
-    runs-on: ubuntu-latest
-    container:
-      image: kasmweb/alpine-320-desktop:1.18.0
-      options: --user 0
+    runs-on: windows-latest
     needs: [dump-items, dump-collisionmap, dump-heightmap, dump-itemsprites, dump-mapimage, dump-npcs, dump-objectinfo, dump-sprites]
     steps:
       - name: Checkout repository
