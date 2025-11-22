@@ -326,12 +326,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      - name: Checkout SRL-T
-        uses: actions/checkout@v5
-        with:
-          repository: 'Torwent/SRL-T'
-          ref: 'master'
-          path: Includes/SRL-T
       - name: Download all dump artifacts
         uses: actions/download-artifact@v4
         with:
@@ -356,23 +350,6 @@ jobs:
               Write-Host "Source not found (skipping): $($m.Source)"
             }
           }
-      - name: Download Simba binaries
-        run: |
-          $latestUrlFile = "https://raw.githubusercontent.com/Villavu/Simba-Build-Archive/refs/heads/main/latest.win64"
-          $simbaZipUrl = (Invoke-WebRequest -Uri $latestUrlFile -UseBasicParsing).Content.Trim()
-          Invoke-WebRequest -Uri $simbaZipUrl -OutFile simba.zip
-          Expand-Archive -Path simba.zip -Force -DestinationPath .
-          Invoke-WebRequest -Uri https://github.com/Villavu/Simba/releases/download/simba1400-release/Simba-Win64.exe -OutFile Simba-1400.exe
-          Invoke-WebRequest -Uri https://indy.fulgan.com/SSL/Archive/openssl-1.0.2j-x64_86-win64.zip -OutFile openssl.zip
-          Expand-Archive -Path openssl.zip -Force -DestinationPath .\Data\64\
-      - name: Run update_gear.simba
-        run: .\Simba-Win64.exe --extractopenssl --run tools/update_gear.simba
-      - name: Run update_items.simba
-        run: .\Simba-Win64.exe --extractopenssl --run tools/update_items.simba
-      - name: Run update_npcs.simba
-        run: |
-          .\Simba-1400.exe --run tools/update_npcs.simba
-          Get-ChildItem .\Data\ -Recurse
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
