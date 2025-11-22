@@ -387,7 +387,9 @@ jobs:
       - name: Run update_items.simba
         run: .\Simba-Win64.exe --run tools/update_items.simba
       - name: Run update_npcs.simba
-        run: .\Simba-1400.exe --run tools/update_npcs.simba
+        run: |
+          .\Simba-1400.exe --run tools/update_npcs.simba
+          Get-ChildItem .\Data\ -Recurse
       - name: Create branch and commit
         run: |
           git config user.name "github-actions[bot]"
