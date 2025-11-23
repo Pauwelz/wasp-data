@@ -91,6 +91,7 @@ jobs:
           mkdir -p cache/output
           java -cp staging/cache-*-SNAPSHOT-jar-with-dependencies.jar net.runelite.cache.SimbaItemDumper \
             --cachedir cache/input --cachename ${{ inputs.cache_version }} --outputdir cache/output
+          ls -lah
       - name: Upload Items
         uses: actions/upload-artifact@v4
         with:
