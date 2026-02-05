@@ -23,7 +23,7 @@ jobs:
       - name: Checkout RuneLite repository
         uses: actions/checkout@v5
         with:
-          repository: 'Torwent/runelite'
+          repository: 'Pauwelz/runelite'
           ref: 'main'
           path: ./runelite
 
